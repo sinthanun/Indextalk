@@ -91,7 +91,7 @@ app.post('/ai', (req, res) => {
     var restUrl = 'https://stocksymbols.herokuapp.com/?symbol=BKK:'+stock_name+'&format=json';
 
     request({url: restUrl,json: true }, function (error, response, body) {
-      if (!error && response.statusCode == 200 && body[0]) {
+      if (!error && response.statusCode == 200 && body[0].e !== '' ) {
         //var json = JSON.parse(body[0]);
         
         /* thai stock price + BKK*/
@@ -103,11 +103,7 @@ app.post('/ai', (req, res) => {
         /* Eng stock price + other market*/
         var msg = 'Stock Symbol: ' + body[0].t + ' Market:' + body[0].e + ' Price ' + body[0].l + ' Change ' + body[0].c + ' ('+ body[0].cp+'%) As of ' + body[0].lt;
         return res.json({speech: msg,displayText: msg,source: 'stock_name'});
-                                        } else { 
-                                          var msg = 'I cannot find you stock symbol, please try again.';
-                                          return res.json({speech: msg,displayText: msg,source: 'stock_name'});
-        
-                                              }
+                                        } 
        } else {
         var errorMessage = 'I cannot find you stock symbol, please try again.';
         return res.status(400).json({ status: {code: 400,errorType: errorMessage}});
