@@ -100,24 +100,24 @@ app.post('/ai', (req, res) => {
         var result = JSON.parse(myJSONObject);
         
         /* netty >> thai Index */
-        if (body[0].e === 'INDEXBKK') {
-        var msg = 'ดัชนี ' + body[0].t + ' ระดับ ' + body[0].l + ' จุด เปลี่ยนแปลง ' + body[0].c + ' จุด ('+ body[0].cp+'%) ข้อมูล ณ ' + body[0].lt;
+        if (result[0].e === 'INDEXBKK') {
+        var msg = 'ดัชนี ' + result[0].t + ' ระดับ ' + result[0].l + ' จุด เปลี่ยนแปลง ' + result[0].c + ' จุด ('+ result[0].cp+'%) ข้อมูล ณ ' + result[0].lt;
         return res.json({speech: msg,displayText: msg,source: 'stock_name'});
         }  else {
         /* netty >>  thai stock price*/
         if (body[0].e === 'BKK') {
-        var msg = 'ชื่อหุ้น ' + body[0].t + ' ราคา ' + body[0].l + ' บาท เปลี่ยนแปลง ' + body[0].c + ' บาท ('+ body[0].cp+'%) ข้อมูล ณ ' + body[0].lt;
+        var msg = 'ชื่อหุ้น ' + result[0].t + ' ราคา ' + result[0].l + ' บาท เปลี่ยนแปลง ' + result[0].c + ' บาท ('+ result[0].cp+'%) ข้อมูล ณ ' + result[0].lt;
         return res.json({speech: msg,displayText: msg,source: 'stock_name'});
         console.log(body);} else {
          /* netty >>  Eng stock price*/
-        var msg = 'Symbol: ' + body[0].t + ' Price ' + body[0].l + ' Change ' + body[0].c + ' ('+ body[0].cp+'%) As of ' + body[0].lt;
+        var msg = 'Symbol: ' + result[0].t + ' Price ' + result[0].l + ' Change ' + result[0].c + ' ('+ result[0].cp+'%) As of ' + result[0].lt;
         return res.json({speech: msg,displayText: msg,source: 'stock_name'});
                                   }
                    }
         
         
       } else {
-        var errorMessage = 'I failed to look up stock name.';
+        var errorMessage = 'I cannot find you symbol name.';
         return res.status(400).json({ status: {code: 400,errorType: errorMessage}});
       }
     })
