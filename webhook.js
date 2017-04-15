@@ -98,19 +98,15 @@ app.post('/ai', (req, res) => {
         //var json = JSON.parse(body[0]);
         myJSONObject.push(body.substring(3));
         var result = JSON.parse(myJSONObject);
-        
-        var msg = 'ดัชนี ' + result[0].t + ' ระดับ ' + result[0].l + ' จุด เปลี่ยนแปลง ' + result[0].c + ' จุด ('+ result[0].cp+'%) ข้อมูล ณ ' + result[0].lt;
-        return res.json({speech: msg,displayText: msg,source: 'stock_name'});
-        
+
         /* netty >> thai Index */
-        /*if (result[0].e === 'INDEXBKK') {
+        if (result[0].e === 'INDEXBKK') {
         var msg = 'ดัชนี ' + result[0].t + ' ระดับ ' + result[0].l + ' จุด เปลี่ยนแปลง ' + result[0].c + ' จุด ('+ result[0].cp+'%) ข้อมูล ณ ' + result[0].lt;
         return res.json({speech: msg,displayText: msg,source: 'stock_name'});
         } else { 
         var msg = 'ชื่อหุ้น ' + result[0].t + ' ราคา ' + result[0].l + ' บาท เปลี่ยนแปลง ' + result[0].c + ' บาท ('+ result[0].cp+'%) ข้อมูล ณ ' + result[0].lt;
         return res.json({speech: msg,displayText: msg,source: 'stock_name'});
-                 } 
-                */
+                 }                   
          /* 
         /* netty >>  thai stock price
         if (result[0].e === 'BKK') {
