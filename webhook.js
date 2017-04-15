@@ -93,8 +93,8 @@ app.post('/ai', (req, res) => {
     //var restUrl = 'https://stocksymbols.herokuapp.com/symbol=BKK:'+stock_name+'&format=json';
     var restUrl = 'http://www.google.com/finance/info?nfotype=infoquoteall&q=INDEXBKK:'+stock_name+'&callback=?';
 
-    request({url: restUrl,json: true }, function (error, response, body) {
-      if (!error && response.statusCode == 200 && body[0]) {
+    request({url: restUrl,json: true }, function (error, response, result) {
+      if (!error && response.statusCode == 200 && result[0]) {
         //var json = JSON.parse(body[0]);
         myJSONObject.push(body.substring(3));
         var result = JSON.parse(myJSONObject);
@@ -103,9 +103,14 @@ app.post('/ai', (req, res) => {
         if (result[0].e === 'INDEXBKK') {
         var msg = 'ดัชนี ' + result[0].t + ' ระดับ ' + result[0].l + ' จุด เปลี่ยนแปลง ' + result[0].c + ' จุด ('+ result[0].cp+'%) ข้อมูล ณ ' + result[0].lt;
         return res.json({speech: msg,displayText: msg,source: 'stock_name'});
-        } else {
+        } else { 
+         if (result[0].e === 'BKK') {
         var msg = 'ชื่อหุ้น ' + result[0].t + ' ราคา ' + result[0].l + ' บาท เปลี่ยนแปลง ' + result[0].c + ' บาท ('+ result[0].cp+'%) ข้อมูล ณ ' + result[0].lt;
         return res.json({speech: msg,displayText: msg,source: 'stock_name'});
+                                     } else { 
+                                       var msg = 'Symbol: ' + result[0].t + ' Price ' + result[0].l + ' Change ' + result[0].c + ' ('+ result[0].cp+'%) As of ' + result[0].lt;
+                                       return res.json({speech: msg,displayText: msg,source: 'stock_name'});
+                                            }
          /* 
         /* netty >>  thai stock price
         if (result[0].e === 'BKK') {
