@@ -87,13 +87,17 @@ app.post('/ai', (req, res) => {
   if (req.body.result.action === 'AskStock') {
     console.log('*** Stock Symbols ***');
     var stock_name = req.body.result.parameters['stockname'];
+    var myJSONObject = [];
     //var restUrl = 'http://finance.google.com/finance/info?client=ig&q=BKK:'+stock_name+'&format=json';
     //var restUrl = 'https://google-stocks.herokuapp.com/?code=BKK:'+stock_name+'&format=json';
-    var restUrl = 'https://stocksymbols.herokuapp.com/?code=BKK:'+stock_name+'&format=json';
+    //var restUrl = 'https://stocksymbols.herokuapp.com/symbol=BKK:'+stock_name+'&format=json';
+    var restUrl = 'http://www.google.com/finance/info?nfotype=infoquoteall&q=INDEXBKK:'+stock_name+'&callback=?';
 
     request({url: restUrl,json: true }, function (error, response, body) {
       if (!error && response.statusCode == 200 && body[0]) {
         //var json = JSON.parse(body[0]);
+        myJSONObject.push(body.substring(3));
+        var result = JSON.parse(myJSONObject);
         
         /* netty >> thai Index */
         if (body[0].e === 'INDEXBKK') {
