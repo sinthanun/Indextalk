@@ -104,13 +104,9 @@ app.post('/ai', (req, res) => {
         var msg = 'ดัชนี ' + result[0].t + ' ระดับ ' + result[0].l + ' จุด เปลี่ยนแปลง ' + result[0].c + ' จุด ('+ result[0].cp+'%) ข้อมูล ณ ' + result[0].lt;
         return res.json({speech: msg,displayText: msg,source: 'stock_name'});
         } else { 
-         if (result[0].e === 'BKK') {
         var msg = 'ชื่อหุ้น ' + result[0].t + ' ราคา ' + result[0].l + ' บาท เปลี่ยนแปลง ' + result[0].c + ' บาท ('+ result[0].cp+'%) ข้อมูล ณ ' + result[0].lt;
         return res.json({speech: msg,displayText: msg,source: 'stock_name'});
-                                     } else { 
-                                       var msg = 'Symbol: ' + result[0].t + ' Price ' + result[0].l + ' Change ' + result[0].c + ' ('+ result[0].cp+'%) As of ' + result[0].lt;
-                                       return res.json({speech: msg,displayText: msg,source: 'stock_name'});
-                                            }
+                                    
          /* 
         /* netty >>  thai stock price
         if (result[0].e === 'BKK') {
