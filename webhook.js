@@ -87,39 +87,22 @@ app.post('/ai', (req, res) => {
   if (req.body.result.action === 'AskStock') {
     console.log('*** Stock Symbols ***');
     var stock_name = req.body.result.parameters['stockname'];
-    var myJSONObject = [];
-    //var restUrl = 'http://finance.google.com/finance/info?client=ig&q=BKK:'+stock_name+'&format=json';
-    //var restUrl = 'https://google-stocks.herokuapp.com/?code=BKK:'+stock_name+'&format=json';
-    //var restUrl = 'https://stocksymbols.herokuapp.com/symbol=BKK:'+stock_name+'&format=json';
-    var restUrl = 'http://www.google.com/finance/info?nfotype=infoquoteall&q=INDEXBKK:'+stock_name+'&callback=?';
+    var restUrl = 'https://google-stocks.herokuapp.com/?code=BKK:'+stock_name+'&format=json';
 
     request({url: restUrl,json: true }, function (error, response, body) {
       if (!error && response.statusCode == 200 && body[0]) {
-        myJSONObject.push(body.substring(3));
-        var result = JSON.parse(myJSONObject);
-        var msg = 'ดัชนี ' + result[0].t + ' ระดับ ' + result[0].l + ' จุด เปลี่ยนแปลง ' + result[0].c + ' จุด ('+ result[0].cp+'%) ข้อมูล ณ ' + result[0].lt;
+        //var json = JSON.parse(body[0]);
+        /* thai stock price*/
+        if (body[0].e === 'BKK') {
+        var msg = 'ชื่อหุ้น ' + body[0].t + ' ราคา ' + body[0].l + ' บาท เปลี่ยนแปลง ' + body[0].c + ' บาท ('+ body[0].cp+'%) ข้อมูล ณ ' + body[0].lt;
+        return res.json({speech: msg,displayText: msg,source: 'stock_name'});
+        console.log(body);} else {
+        var msg = 'Symbol: ' + body[0].t + ' Price ' + body[0].l + ' Change ' + body[0].c + ' ('+ body[0].cp+'%) As of ' + body[0].lt;
         return res.json({speech: msg,displayText: msg,source: 'stock_name'});
         
-        /* netty >> thai Index */
-        /*
-        if (result[0].e === 'INDEXBKK') {
-        var msg = 'ดัชนี ' + result[0].t + ' ระดับ ' + result[0].l + ' จุด เปลี่ยนแปลง ' + result[0].c + ' จุด ('+ result[0].cp+'%) ข้อมูล ณ ' + result[0].lt;
-        return res.json({speech: msg,displayText: msg,source: 'stock_name'});
-        } else { 
-        var msg = 'ชื่อหุ้น ' + result[0].t + ' ราคา ' + result[0].l + ' บาท เปลี่ยนแปลง ' + result[0].c + ' บาท ('+ result[0].cp+'%) ข้อมูล ณ ' + result[0].lt;
-        return res.json({speech: msg,displayText: msg,source: 'stock_name'});
-                 }        
-        */
-         /* 
-        /* netty >>  thai stock price
-        if (result[0].e === 'BKK') {
-        var msg = 'ชื่อหุ้น ' + result[0].t + ' ราคา ' + result[0].l + ' บาท เปลี่ยนแปลง ' + result[0].c + ' บาท ('+ result[0].cp+'%) ข้อมูล ณ ' + result[0].lt;
-        return res.json({speech: msg,displayText: msg,source: 'stock_name'});
-        console.log(result);} else {
-         /* netty >>  Eng stock price
-        var msg = 'Symbol: ' + result[0].t + ' Price ' + result[0].l + ' Change ' + result[0].c + ' ('+ result[0].cp+'%) As of ' + result[0].lt;
-        return res.json({speech: msg,displayText: msg,source: 'stock_name'});
-                                  }*/
+        }
+        
+        /* Eng stock price*/
                    
         
         
