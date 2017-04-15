@@ -95,7 +95,7 @@ app.post('/ai', (req, res) => {
         //var json = JSON.parse(body[0]);
         
         /* netty >> thai Index */
-        if (body[0].e === 'INDEXCBOE') {
+        if (body[0].e === 'INDEXBKK') {
         var msg = 'ดัชนี ' + body[0].t + ' ระดับ ' + body[0].l + ' จุด เปลี่ยนแปลง ' + body[0].c + ' จุด ('+ body[0].cp+'%) ข้อมูล ณ ' + body[0].lt;
         return res.json({speech: msg,displayText: msg,source: 'stock_name'});
         }  else {
