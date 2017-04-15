@@ -93,22 +93,24 @@ app.post('/ai', (req, res) => {
     request({url: restUrl,json: true }, function (error, response, body) {
       if (!error && response.statusCode == 200 && body[0]) {
         //var json = JSON.parse(body[0]);
-        /* thai stock price*/
+        
+        /* thai stock price + BKK*/
         if (body[0].e === 'BKK') {
         var msg = 'ชื่อหุ้น ' + body[0].t + ' ราคา ' + body[0].l + ' บาท เปลี่ยนแปลง ' + body[0].c + ' บาท ('+ body[0].cp+'%) ข้อมูล ณ ' + body[0].lt;
         return res.json({speech: msg,displayText: msg,source: 'stock_name'});
-        console.log(body);} else {
+        console.log(body);} else if (body[0].e !== 'BKK')  {
+        /* Eng stock price + other market*/
         var msg = 'Stock Symbol: ' + body[0].t + ' Market:' + body[0].e + ' Price ' + body[0].l + ' Change ' + body[0].c + ' ('+ body[0].cp+'%) As of ' + body[0].lt;
         return res.json({speech: msg,displayText: msg,source: 'stock_name'});
         
-        }
+                                  }
         
-        /* Eng stock price*/
+        
                    
         
         
       } else {
-        var errorMessage = 'I cannot find you symbol name.';
+        var errorMessage = 'I cannot find you stock symbol, please try again.';
         return res.status(400).json({ status: {code: 400,errorType: errorMessage}});
       }
     })
