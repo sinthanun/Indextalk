@@ -87,8 +87,8 @@ app.post('/ai', (req, res) => {
   if (req.body.result.action === 'AskStock') {
     console.log('*** Stock Symbols ***');
     var stock_name = req.body.result.parameters['stockname'];
-    var restUrl = 'http://finance.google.com/finance/info?client=ig&q=BKK:'+stock_name+'&format=json';
-    //var restUrl = 'https://google-stocks.herokuapp.com/?code=BKK:'+stock_name+'&format=json';
+    //var restUrl = 'http://finance.google.com/finance/info?client=ig&q=BKK:'+stock_name+'&format=json';
+    var restUrl = 'https://google-stocks.herokuapp.com/?code=BKK:'+stock_name+'&format=json';
 
     request({url: restUrl,json: true }, function (error, response, body) {
       if (!error && response.statusCode == 200 && body[0]) {
