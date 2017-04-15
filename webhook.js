@@ -108,7 +108,7 @@ app.post('/ai', (req, res) => {
         if (result[0].e === 'BKK') {
         var msg = 'ชื่อหุ้น ' + result[0].t + ' ราคา ' + result[0].l + ' บาท เปลี่ยนแปลง ' + result[0].c + ' บาท ('+ result[0].cp+'%) ข้อมูล ณ ' + result[0].lt;
         return res.json({speech: msg,displayText: msg,source: 'stock_name'});
-        console.log(body);} else {
+        console.log(result);} else {
          /* netty >>  Eng stock price*/
         var msg = 'Symbol: ' + result[0].t + ' Price ' + result[0].l + ' Change ' + result[0].c + ' ('+ result[0].cp+'%) As of ' + result[0].lt;
         return res.json({speech: msg,displayText: msg,source: 'stock_name'});
