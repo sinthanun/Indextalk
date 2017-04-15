@@ -103,7 +103,7 @@ app.post('/ai', (req, res) => {
         if (result[0].e === 'INDEXBKK') {
         var msg = 'ดัชนี ' + result[0].t + ' ระดับ ' + result[0].l + ' จุด เปลี่ยนแปลง ' + result[0].c + ' จุด ('+ result[0].cp+'%) ข้อมูล ณ ' + result[0].lt;
         return res.json({speech: msg,displayText: msg,source: 'stock_name'});
-        }  else if (result[0].e === 'BKK') {
+        }  else {
         var msg = 'ชื่อหุ้น ' + result[0].t + ' ราคา ' + result[0].l + ' บาท เปลี่ยนแปลง ' + result[0].c + ' บาท ('+ result[0].cp+'%) ข้อมูล ณ ' + result[0].lt;
         return res.json({speech: msg,displayText: msg,source: 'stock_name'});
          /* 
