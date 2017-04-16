@@ -117,6 +117,10 @@ app.post('/ai', (req, res) => {
         var errorMessage = 'test alert';
         return res.status(400).json({ status: {code: 400,errorType: errorMessage}});
             } /*end AskStock*/
+    else {
+        var errorMessage = 'undefined action';
+        return res.status(400).json({ status: {code: 400,errorType: errorMessage}});
+    }
   }
 
 });
