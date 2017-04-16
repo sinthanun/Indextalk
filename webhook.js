@@ -114,7 +114,7 @@ app.post('/ai', (req, res) => {
       var dwname = req.body.result.parameters['dwname'];   
       var restUrl = 'https://stocksymbols.herokuapp.com/?symbol=BKK:'+dwname+'&format=json';
         
-        var errorMessage = 'test alert';
+        var errorMessage = 'test alert AskDW';
         return res.status(400).json({ status: {code: 400,errorType: errorMessage}});
             } /*end AskStock*/
     else {
