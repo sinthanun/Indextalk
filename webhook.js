@@ -6,6 +6,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const request = require('request');
 const apiai = require('apiai');
+const xml2js = require('xml2js');
 
 const app = express();
 app.use(bodyParser.json());
@@ -83,45 +84,70 @@ function sendMessage(event) {
 app.post('/ai', (req, res) => {
   console.log('*** Webhook for api.ai query ***');
   console.log(req.body.result);
-
-  if (req.body.result.action === 'AskStock') {
+  var dwname = '';  var stock_name = '';  var msg = '';
+  if (req.body.result.action == 'AskStock') {
     console.log('*** Stock Symbols ***');
-    var stock_name = req.body.result.parameters['stockname'];
+    
+    stock_name = req.body.result.parameters['stockname'];
+
+    var callStockGOGL = [];
     //var restUrl = 'https://google-stocks.herokuapp.com/?code=BKK:'+stock_name+'&format=json';
-    var restUrl = 'https://stocksymbols.herokuapp.com/?symbol=BKK:'+stock_name+'&format=json';
+    //var restUrl = 'https://stocksymbols.herokuapp.com/?symbol=BKK:'+stock_name+'&format=json';
+    var restUrl = 'http://www.google.com/finance/info?nfotype=infoquoteall&q=INDEXBKK:'+stock_name+'&callback=?';
 
     request({url: restUrl,json: true }, function (error, response, body) {
-      if (!error && response.statusCode == 200 && body[0].e !== '' ) {
-        //var json = JSON.parse(body[0]);
+      if (!error && response.statusCode == 200 && body) { 
+        callStockGOGL.push(body.substring(3));
+        var result = JSON.parse(callStockGOGL);
+
+        msg = 'ชื่อหุ้น ' + result[0].t + ' ราคา ' + result[0].l + ' บาท เปลี่ยนแปลง ' + result[0].c + ' บาท ('+ result[0].cp+'%) ข้อมูล ณ ' + result[0].lt;
+        return res.json({speech: msg,displayText: msg,source: 'stock_name'});
         
-        /* thai stock price + BKK*/
+        /*
+        // thai stock price + BKK
         if (body[0].e === 'BKK') {
-        var msg = 'ชื่อหุ้น ' + body[0].t + ' ราคา ' + body[0].l + ' บาท เปลี่ยนแปลง ' + body[0].c + ' บาท ('+ body[0].cp+'%) ข้อมูล ณ ' + body[0].lt;
-        return res.json({speech: msg,displayText: msg,source: 'stock_name'});
-        console.log(body);
-                                  } else if (body[0].e !== 'BKK')  {
-        /* Eng stock price + other market*/
-        var msg = 'Stock Symbol: ' + body[0].t + ' Market:' + body[0].e + ' Price ' + body[0].l + ' Change ' + body[0].c + ' ('+ body[0].cp+'%) As of ' + body[0].lt;
-        return res.json({speech: msg,displayText: msg,source: 'stock_name'});
-                                        } 
-       } else {
+          var msg = 'ชื่อหุ้น ' + body[0].t + ' ราคา ' + body[0].l + ' บาท เปลี่ยนแปลง ' + body[0].c + ' บาท ('+ body[0].cp+'%) ข้อมูล ณ ' + body[0].lt;
+          return res.json({speech: msg,displayText: msg,source: 'stock_name'});
+        }else{
+        // Eng stock price + other market
+          var msg = 'Stock Symbol: ' + body[0].t + ' Market:' + body[0].e + ' Price ' + body[0].l + ' Change ' + body[0].c + ' ('+ body[0].cp+'%) As of ' + body[0].lt;
+          return res.json({speech: msg,displayText: msg,source: 'stock_name'});
+        } */ 
+
+      } else {
         var errorMessage = 'I cannot find you stock symbol, please try again.';
         return res.status(400).json({ status: {code: 400,errorType: errorMessage}});
       }
     });
     /*end AskStock*/ 
-  }else if (req.body.result.action === 'AskDW') {
+  }else if (!msg && req.body.result.action == 'AskDW') {
       console.log('*** DW Symbols ***');
-      var dwname = req.body.result.parameters['dwname'];   
-      var restUrl = 'https://stocksymbols.herokuapp.com/?symbol=BKK:'+dwname+'&format=json';
-      request({url: restUrl,json: true }, function (error, response, body) {  
-        var msg = 'test alert AskDW';
-        return res.json({speech: msg,displayText: msg});
-      });
+      dwname = req.body.result.parameters['dwname'];   
+      var cun = 0; var msg = ''; var myJSONObject = []; var msgDW = '';
+      var dwUrl = 'http://49.231.7.202:8080/axis2/services/DWService/getDWCalculatorByFormat?secSym='+dwname+'&format=json';
+        
+        request({url: dwUrl,json: true }, function (error, response, body) {
+          if (!error && response.statusCode == 200 && body[0]) {
+            xml2js.parseString(body, function (err, result) {
+              myJSONObject.push(result);
+              var json = JSON.parse(myJSONObject[0]['ns:getDWCalculatorByFormatResponse']['ns:return']);
+                
+              var nn = json.totalRecord;
+                for (cun = 0;cun<nn;cun++){
+                  //if(json['resultSet'][cun].IssuerSym == 'BLS'){
+                    msgDW += 'Underlying ' + json['resultSet'][cun].UnderlyingSym + ' DW: '+ json['resultSet'][cun].SecSym + ' ราคา ' + json['resultSet'][cun].LstPrice + ' ';
+                  //}
+                }
+                console.log(msgDW);
+                return res.json({speech: msgDW,displayText: msgDW,source: 'stock_name'});
+            });
+          }
+          
+        })
     /*end AskDW*/
   }else {
-        var msg = 'undefined action';
-        return res.json({speech: msg,displayText: msg});
+    var msg = 'undefined action';
+    return res.json({speech: msg,displayText: msg});
   }
 
 });
