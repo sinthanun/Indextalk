@@ -138,11 +138,10 @@ app.post('/ai', (req, res) => {
                     msgDW += 'Underlying ' + json['resultSet'][cun].UnderlyingSym + ' DW: '+ json['resultSet'][cun].SecSym + ' ราคา ' + json['resultSet'][cun].LstPrice + ' ';
                   //}
                 }
-                console.log(msgDW);
                 return res.json({speech: msgDW,displayText: msgDW,source: 'stock_name'});
             });
           }
-          
+
         })
     /*end AskDW*/
   }else {
