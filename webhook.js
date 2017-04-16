@@ -108,7 +108,15 @@ app.post('/ai', (req, res) => {
         var errorMessage = 'I cannot find you stock symbol, please try again.';
         return res.status(400).json({ status: {code: 400,errorType: errorMessage}});
       }
-    })
+    } /*end AskStock*/ 
+    else if (req.body.result.action === 'AskDW') {
+      console.log('*** DW Symbols ***');
+      var dwname = req.body.result.parameters['dwname'];   
+      var restUrl = 'https://stocksymbols.herokuapp.com/?symbol=BKK:'+dwname+'&format=json';
+        
+        var errorMessage = 'test alert';
+        return res.status(400).json({ status: {code: 400,errorType: errorMessage}});
+            } /*end AskStock*/
   }
 
 });
